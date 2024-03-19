@@ -13,7 +13,6 @@ class UserController {
       });
     } catch (error) {
       next(error);
-      //   res.status(500).json(error.errors[0]);
     }
   }
   static async getAllUser(req, res, next) {
@@ -24,7 +23,20 @@ class UserController {
       res.status(500).json(error);
     }
   }
-
+  static async getUserById (req, res, next) {
+    try {
+        const { id } = req.params;
+        console.log(id)
+        const user = await User.findByPk(id);
+        if (!user) {
+            throw "Not found"
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        // console.log(error)
+        next(error)
+    }
+  }
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -34,8 +46,8 @@ class UserController {
       if (correctUser) {
         const payload = {
           id: user.id,
-          name: user.name,
           email: user.email,
+          name: user.name,
         };
         const access_token = createToken(payload);
         res.status(200).json({ message: "Login Success", access_token });
