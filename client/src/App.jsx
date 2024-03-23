@@ -1,10 +1,15 @@
 // import './App.css'
-import Navbar from "./components/Navbar";
+import { RouterProvider } from "react-router-dom";
+
+import Router from "./router";
+import AppContextProvider from "./context/appContext";
 
 function App() {
   return (
     <>
-      <Navbar />
+      <AppContextProvider>
+        <RouterProvider router={Router} />
+      </AppContextProvider>
     </>
   );
 }

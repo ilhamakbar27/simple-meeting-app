@@ -18,10 +18,10 @@ module.exports = {
         unique: true,
         allowNull: false,
       },
-      // password: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false,
-      // },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       phone: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -29,6 +29,7 @@ module.exports = {
       credit: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,
@@ -41,6 +42,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Clients");
+    await queryInterface.dropTable("Clients", );
   },
 };

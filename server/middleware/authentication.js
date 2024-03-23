@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Client } = require("../models");
 const { verifyToken } = require("../utils/token");
 
 const Authentication = async (req, res, next) => {
@@ -10,14 +10,22 @@ const Authentication = async (req, res, next) => {
     }
     const access_token = authorization.split(" ")[1];
     const payload = verifyToken(access_token);
+
     const user = await User.findOne({ where: { email: payload.email } });
-    if (!user) {
-      throw "Unauthorized"
+    const client = await Client.findOne({ where: { email: payload.email } });
+  
+    const account = user || client;
+
+    if (!account) {
+      throw "Unauthorized";
     }
+
     req.loginInfo = {
-      userId: user.id,
-      email: user.email,
-      name: user.name,
+      userId: account.id,
+      email: account.email,
+      credit: account?.credit,
+      name: account.name,
+      isUser: Boolean(user),
     };
 
     console.log(req.loginInfo);

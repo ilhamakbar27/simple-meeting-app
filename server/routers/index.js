@@ -5,6 +5,7 @@ const clients = require("./client");
 const booking = require("./booking");
 const Authentication = require("../middleware/authentication");
 
+
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 

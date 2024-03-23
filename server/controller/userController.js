@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Client } = require("../models");
 const { compare } = require("../utils/hash");
 const { createToken } = require("../utils/token");
 
@@ -23,31 +23,40 @@ class UserController {
       res.status(500).json(error);
     }
   }
-  static async getUserById (req, res, next) {
+  static async getUserById(req, res, next) {
     try {
-        const { id } = req.params;
-        console.log(id)
-        const user = await User.findByPk(id);
-        if (!user) {
-            throw "Not found"
-        }
-        res.status(200).json(user);
+      const { id } = req.params;
+      console.log(id);
+      const user = await User.findByPk(id);
+      if (!user) {
+        throw "Not found";
+      }
+      res.status(200).json(user);
     } catch (error) {
-        // console.log(error)
-        next(error)
+      // console.log(error)
+      next(error);
     }
   }
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ where: { email } });
-      const correctUser = compare(password, user.password);
+      const client = await Client.findOne({ where: { email } });
+      
+      const account = user || client;
+
+      if (!account) throw "Invalid credentials";
+
+      const correctUser = compare(password, account.password);
+
+        console.log(account.password)
 
       if (correctUser) {
         const payload = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
+          id: account.id,
+          email: account.email,
+          name: account.name,
+          isUser: Boolean(user),
         };
         const access_token = createToken(payload);
         res.status(200).json({ message: "Login Success", access_token });
